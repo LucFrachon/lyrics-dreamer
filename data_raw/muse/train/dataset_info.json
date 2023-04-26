@@ -1,0 +1,37 @@
+{
+  "builder_name": "muse",
+  "citation": "@InProceedings{huggingartists:dataset,\ntitle = {Lyrics dataset},\nauthor={Aleksey Korshuk\n},\nyear={2021}\n}\n",
+  "config_name": "default",
+  "dataset_size": 230770,
+  "description": "This dataset is designed to generate lyrics with HuggingArtists.\n",
+  "download_checksums": {
+    "https://huggingface.co/datasets/huggingartists/muse/resolve/main/datasets.json": {
+      "num_bytes": 238868,
+      "checksum": null
+    }
+  },
+  "download_size": 238868,
+  "features": {
+    "text": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "https://github.com/AlekseyKorshuk/huggingartists",
+  "license": "All rights belong to copyright holders",
+  "size_in_bytes": 469638,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 230770,
+      "num_examples": 333,
+      "dataset_name": "muse"
+    }
+  },
+  "version": {
+    "version_str": "1.0.0",
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}
