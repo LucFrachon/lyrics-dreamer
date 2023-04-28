@@ -1,9 +1,6 @@
 import os
-import random
 
-import transformers.utils.logging
 import yaml
-import numpy as np
 import torch
 from datasets import load_from_disk, list_datasets
 from transformers import (
@@ -11,29 +8,22 @@ from transformers import (
     DataCollatorForLanguageModeling,
     Trainer,
     TrainingArguments,
-    get_cosine_with_hard_restarts_schedule_with_warmup,
     AutoTokenizer,
     EarlyStoppingCallback,
 )
 import wandb
 
 from data_processing import load_preprocess_and_save, tokenize
+from utils import set_seed
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 
 with open(os.path.join(src_dir, "../config/artists.yaml"), 'r') as f:
-    ARTISTS = yaml.load(f, Loader=yaml.FullLoader)['artists']
+    ARTISTS = yaml.load(f, Loader=yaml.FullLoader)
 with open(os.path.join(src_dir, "../config/tokenizer.yaml"), 'r') as f:
     tokenizer_config = yaml.load(f, Loader=yaml.FullLoader)['config']
 with open(os.path.join(src_dir, "../config/training.yaml"), 'r') as f:
     training_config = yaml.load(f, Loader=yaml.FullLoader)['config']
-
-
-def set_seed(seed):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
 
 
 def train(datasets_dict, tokenizer, train_config):
@@ -117,7 +107,7 @@ def add_artist_model(artist_name):
     run_training_pipeline([artist_name])
 
     # Add the new artist to the list:
-    ARTISTS['artists'].append(artist_name)
+    ARTISTS.append(artist_name)
     with open(os.path.join(src_dir, "../config/artists.yaml"), 'w') as f:
         yaml.dump(ARTISTS, f)
     print(f"Artist {artist_name} added to `../config/artists.yaml`.")

@@ -1,9 +1,8 @@
-import os, random
+import os
 from functools import partial
 
 import yaml
 
-import numpy as np
 from transformers import AutoTokenizer
 from datasets import load_dataset, load_from_disk, Dataset, DatasetDict
 
@@ -15,7 +14,7 @@ tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 tokenizer.pad_token = tokenizer.eos_token
 # Import the artist names
 with open(os.path.join(src_dir, "../config/artists.yaml"), 'r') as f:
-    ARTISTS = yaml.load(f, Loader=yaml.FullLoader)['artists']
+    ARTISTS = yaml.load(f, Loader=yaml.FullLoader)
 # Import the tokenizer configuration
 with open(os.path.join(src_dir, "../config/tokenizer.yaml"), 'r') as f:
     tokenizer_config = yaml.load(f, Loader=yaml.FullLoader)['config']
