@@ -8,13 +8,14 @@ from utils import set_seed
 src_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-def initialise_model(artist_name: str):
+def initialise_model_for_inference(artist_name: str):
     checkpoint_dir = os.path.join(src_dir, f"../checkpoints/{artist_name}")
     # Get the most recent checkpoint
     step_nums = [int(f.split('-')[1]) for f in os.listdir(checkpoint_dir) if f.startswith('checkpoint')]
     step_nums.sort()
     latest_checkpoint = os.path.join(checkpoint_dir, f"checkpoint-{step_nums[-1]}")
     tokenizer = AutoTokenizer.from_pretrained('gpt2')
+    tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(latest_checkpoint)
     model.eval()
 
@@ -62,7 +63,7 @@ def pretty_print(generated_lyrics):
 
 def main(args):
     set_seed(args.seed)
-    model, tokenizer = initialise_model(args.artist)
+    model, tokenizer = initialise_model_for_inference(args.artist)
     generated_lyrics = generate_lyrics(
         model,
         tokenizer,

@@ -1,4 +1,5 @@
 import os
+import random
 
 import yaml
 import torch
@@ -29,9 +30,12 @@ with open(os.path.join(src_dir, "../config/training.yaml"), 'r') as f:
 def train(datasets_dict, tokenizer, train_config):
     data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False, return_tensors='pt')
     for artist in datasets_dict.keys():
+        # Generate a random string for the run name:
+        run_name = f"{artist}-{''.join([str(i) for i in random.sample(range(10), 6)])}"
+
         wandb.init(
             project="lyrics-dreamer",
-            name="gpt2-finetuning-" + artist,
+            name=run_name,
             config={
                 'artist': artist,
                 'tokenizer': tokenizer_config,
@@ -86,14 +90,19 @@ def train(datasets_dict, tokenizer, train_config):
         wandb.finish()
 
 
-def add_artist_model(artist_name):
+def add_artist_model(artist_name, force_retrain=False):
     available_artists = [dataset for dataset in list_datasets() if dataset.startswith('huggingartists')]
     available_artists = [artist.split('/')[-1] for artist in available_artists]
+
     if artist_name not in available_artists:
         print(f"Dataset `huggingartits/{artist_name}` not found in HuggingFace datasets. Please select a different one.")
         choice = input("See available artists? [y/n]: ")
         if choice == 'y':
             print(available_artists)
+        return
+
+    if artist_name in ARTISTS and not force_retrain:
+        print(f"The model for {artist_name} is already available.")
         return
 
     _ = load_preprocess_and_save(
@@ -107,10 +116,11 @@ def add_artist_model(artist_name):
     run_training_pipeline([artist_name])
 
     # Add the new artist to the list:
-    ARTISTS.append(artist_name)
-    with open(os.path.join(src_dir, "../config/artists.yaml"), 'w') as f:
-        yaml.dump(ARTISTS, f)
-    print(f"Artist {artist_name} added to `../config/artists.yaml`.")
+    if artist_name not in ARTISTS:
+        ARTISTS.append(artist_name)
+        with open(os.path.join(src_dir, "../config/artists.yaml"), 'w') as f:
+            yaml.dump(ARTISTS, f)
+        print(f"Artist {artist_name} added to `../config/artists.yaml`.")
 
 
 def run_training_pipeline(artist_list = ARTISTS):
@@ -125,7 +135,7 @@ def run_training_pipeline(artist_list = ARTISTS):
 
 def main(args):
     if args.add_1_artist:
-        add_artist_model(args.artist)
+        add_artist_model(args.artist, force_retrain=args.force_retrain)
     else:
         run_training_pipeline()
 
@@ -135,6 +145,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-1', '--add_1_artist', action='store_true', help='Add a new artist to the training pipeline.')
-    parser.add_argument('-a', '--artist', type=str, help='Name of the artist to add.')
+    parser.add_argument('-a', '--artist', type=str, default='queen', help='Name of the artist to add.')
+    parser.add_argument('-f', '--force_retrain', action='store_true', help='Force retraining of the model even if it'
+                                                                           'exists. Only use with `-1`.')
     args = parser.parse_args()
     main(args)
