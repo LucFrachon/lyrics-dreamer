@@ -1,5 +1,6 @@
 import os
 import random
+from argparse import Namespace
 
 import yaml
 import torch
@@ -15,7 +16,7 @@ from transformers import (
 import wandb
 
 from data_processing import load_preprocess_and_save, tokenize
-from utils import set_seed
+from utils import set_seed, TempRandomSeed
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -29,9 +30,12 @@ with open(os.path.join(src_dir, "../config/training.yaml"), 'r') as f:
 
 def train(datasets_dict, tokenizer, train_config):
     data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False, return_tensors='pt')
-    for artist in datasets_dict.keys():
-        # Generate a random string for the run name:
-        run_name = f"{artist}-{''.join([str(i) for i in random.sample(range(10), 6)])}"
+    for i, artist in enumerate(datasets_dict.keys()):
+
+        # Generate a random string for the run name. Since we may have fixed the seed earlier,
+        # generate a temporary random seed to ensure the run name is different each time.
+        with TempRandomSeed(i):
+            run_name = f"{artist}-{''.join([str(i) for i in random.sample(range(10), 6)])}"
 
         wandb.init(
             project="lyrics-dreamer",
@@ -74,7 +78,7 @@ def train(datasets_dict, tokenizer, train_config):
         #     # num_training_steps=training_args.max_steps,
         #     num_cycles=int(training_config['n_cosine_cycles']),
         # )
-        lr_scheduler= None
+        lr_scheduler = None
 
         trainer = Trainer(
             model=model,
@@ -95,7 +99,8 @@ def add_artist_model(artist_name, force_retrain=False):
     available_artists = [artist.split('/')[-1] for artist in available_artists]
 
     if artist_name not in available_artists:
-        print(f"Dataset `huggingartits/{artist_name}` not found in HuggingFace datasets. Please select a different one.")
+        print(f"Dataset `huggingartits/{artist_name}` not found in HuggingFace datasets. "
+              f"Please select a different one.")
         choice = input("See available artists? [y/n]: ")
         if choice == 'y':
             print(available_artists)
@@ -123,7 +128,7 @@ def add_artist_model(artist_name, force_retrain=False):
         print(f"Artist {artist_name} added to `../config/artists.yaml`.")
 
 
-def run_training_pipeline(artist_list = ARTISTS):
+def run_training_pipeline(artist_list: list = ARTISTS):
     set_seed(training_config['seed'])
     datasets = {
         artist: load_from_disk(os.path.join(src_dir, f"../data_tokenized/{artist}")) for artist in artist_list
@@ -133,7 +138,7 @@ def run_training_pipeline(artist_list = ARTISTS):
     train(datasets, tokenizer, training_config)
 
 
-def main(args):
+def main(args: Namespace):
     if args.add_1_artist:
         add_artist_model(args.artist, force_retrain=args.force_retrain)
     else:
