@@ -1,13 +1,9 @@
 # Tests for the data_processing.py script
 
-# +
 import os
-import shutil
 import unittest
 from functools import partial
 
-import datasets
-import torch
 from datasets import load_from_disk, DatasetDict, Dataset, load_dataset
 from transformers import AutoTokenizer
 

@@ -3,7 +3,7 @@ import os
 import yaml
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from utils import set_seed
+from src.utils import set_seed
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -54,12 +54,36 @@ def generate_lyrics(
     return generated_lyrics
 
 
-def pretty_print(generated_lyrics):
-    print('---')
+def pretty_format(generated_lyrics, max_width=80):
+    def wrap_text(text, max_width):
+        original_lines = text.split('\n')
+        wrapped_lines = []
+
+        for line in original_lines:
+            words = line.split()
+            current_line = []
+
+            for word in words:
+                if len(" ".join(current_line + [word])) <= max_width:
+                    current_line.append(word)
+                else:
+                    wrapped_lines.append(" ".join(current_line))
+                    current_line = [word]
+
+            wrapped_lines.append(" ".join(current_line))  # Add the last line of the current group
+        return "\n".join(wrapped_lines)
+
+
+    if not isinstance(generated_lyrics, list):
+        generated_lyrics = [generated_lyrics]
+    out = '---\n'
+
     for i, lyric in enumerate(generated_lyrics):
-        print(f"Lyric {i + 1}:")
         print(lyric)
-        print('---')
+        out += f"Lyrics {i + 1}:\n" if len(generated_lyrics) > 1 else "Lyrics:\n"
+        out += wrap_text(lyric, max_width)
+        out += '\n---'
+    return out
 
 def main(args):
     set_seed(args.seed)
@@ -77,7 +101,7 @@ def main(args):
         repetition_penalty=args.repetition_penalty,
         early_stopping=args.early_stopping,
     )
-    pretty_print(generated_lyrics)
+    print(pretty_format(generated_lyrics))
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -88,8 +112,8 @@ if __name__ == '__main__':
     parser.add_argument('--num_return_sequences', '-n', type=int, default=1)
     parser.add_argument('--min_length', '-i', type=int, default=100)
     parser.add_argument('--max_length', '-x', type=int, default=200)
-    parser.add_argument('--temperature', '-t', type=float, default=1.)
-    parser.add_argument('--top_p', '-o', type=float, default=0.98)
+    parser.add_argument('--temperature', '-t', type=float, default=1.41)
+    parser.add_argument('--top_p', '-o', type=float, default=0.95)
     parser.add_argument('--top_k', '-k', type=int, default=0)
     parser.add_argument('--repetition_penalty', '-r', type=float, default=1.0)
     parser.add_argument('--early_stopping', '-e', action='store_true')

@@ -7,8 +7,8 @@ import random
 
 import yaml
 
-from inference import initialise_model_for_inference, generate_lyrics, pretty_print
-from utils import set_seed
+from src.inference import initialise_model_for_inference, generate_lyrics, pretty_format
+from src.utils import set_seed
 
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,7 +44,7 @@ def main(args):
         repetition_penalty=args.repetition_penalty,
         early_stopping=args.early_stopping,
     )
-    pretty_print(lyrics)
+    pretty_format(lyrics)
     print(f"Guess whose lyrics these are: {', '.join(ARTISTS)}")
     guess = input(">>> ")
     if guess == artist:

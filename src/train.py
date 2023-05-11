@@ -15,8 +15,8 @@ from transformers import (
 )
 import wandb
 
-from data_processing import load_preprocess_and_save, tokenize
-from utils import set_seed, TempRandomSeed
+from src.data_processing import load_preprocess_and_save, tokenize
+from src.utils import set_seed, TempRandomSeed
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -52,7 +52,7 @@ def train(datasets_dict, tokenizer, train_config):
             output_dir=os.path.join(src_dir, f"../checkpoints/{artist}"),
             learning_rate=float(training_config['learning_rate']),
             weight_decay=float(training_config['weight_decay']),
-            # lr_scheduler_type='cosine_with_restarts',
+            lr_scheduler_type=training_config['lr_scheduler_type'],
             evaluation_strategy='epoch',
             logging_strategy='steps',
             logging_dir=os.path.join(src_dir, '../logs'),
