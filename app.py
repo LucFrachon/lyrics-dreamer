@@ -6,6 +6,8 @@ import src.inference as inference
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
+app.config['DEBUG'] = True
+
 model_kwargs = dict(
     num_return_sequences=1,
     min_length=100,
@@ -52,10 +54,8 @@ def index():
 
 @app.route('/generate_lyrics', methods=['POST'])
 def generate_lyrics():
-    artist = request.form['artist']
-    prompt = request.form['prompt']
-    max_width = int(request.form['max_width'])
-
+    artist = request.form.get('artist')
+    prompt = request.form.get('prompt')
     model, tokenizer = inference.initialise_model_for_inference(artist)
     lyrics = inference.generate_lyrics(
         model,
@@ -63,7 +63,7 @@ def generate_lyrics():
         prompt,
         **model_kwargs,
     )
-    lyrics = inference.pretty_format(lyrics, max_width)
+    lyrics = inference.pretty_format(lyrics)
     return jsonify({"lyrics": lyrics})
 
 

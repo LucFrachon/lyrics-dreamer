@@ -16,6 +16,7 @@ def initialise_model_for_inference(artist_name: str):
     latest_checkpoint = os.path.join(checkpoint_dir, f"checkpoint-{step_nums[-1]}")
     tokenizer = AutoTokenizer.from_pretrained('gpt2')
     tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.pad_token_id = tokenizer.eos_token_id
     model = AutoModelForCausalLM.from_pretrained(latest_checkpoint)
     model.eval()
 
@@ -54,24 +55,24 @@ def generate_lyrics(
     return generated_lyrics
 
 
-def pretty_format(generated_lyrics, max_width=80):
-    def wrap_text(text, max_width):
-        original_lines = text.split('\n')
-        wrapped_lines = []
-
-        for line in original_lines:
-            words = line.split()
-            current_line = []
-
-            for word in words:
-                if len(" ".join(current_line + [word])) <= max_width:
-                    current_line.append(word)
-                else:
-                    wrapped_lines.append(" ".join(current_line))
-                    current_line = [word]
-
-            wrapped_lines.append(" ".join(current_line))  # Add the last line of the current group
-        return "\n".join(wrapped_lines)
+def pretty_format(generated_lyrics):
+    # def wrap_text(text, max_width):
+    #     original_lines = text.split('\n')
+    #     wrapped_lines = []
+    #
+    #     for line in original_lines:
+    #         words = line.split()
+    #         current_line = []
+    #
+    #         for word in words:
+    #             if len(" ".join(current_line + [word])) <= max_width:
+    #                 current_line.append(word)
+    #             else:
+    #                 wrapped_lines.append(" ".join(current_line))
+    #                 current_line = [word]
+    #
+    #         wrapped_lines.append(" ".join(current_line))  # Add the last line of the current group
+    #     return "\n".join(wrapped_lines)
 
 
     if not isinstance(generated_lyrics, list):
@@ -79,9 +80,8 @@ def pretty_format(generated_lyrics, max_width=80):
     out = '---\n'
 
     for i, lyric in enumerate(generated_lyrics):
-        print(lyric)
         out += f"Lyrics {i + 1}:\n" if len(generated_lyrics) > 1 else "Lyrics:\n"
-        out += wrap_text(lyric, max_width)
+        out += lyric
         out += '\n---'
     return out
 
