@@ -1,35 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial- scale=1.0">
     <title>Lyrics Dreamer</title>
 </head>
 <body>
-    <h1>Lyrics Dreamer</h1>
-    <p>Generate lyrics in the style of your favorite artist!</p>
-    <p>
-        Disclaimer 1: The generated lyrics might contain profanity and other offensive language, especially if the artist
-        you selected uses such language in their songs. Please do not use if it makes you uncomfortable.<br>
-        Disclaimer 2: The artist selection is strongly biased towards my personal taste in music.</p>
-    <form id="generate-lyrics-form">
-        <label for="artist">Artist:</label>
-        <select id="artist" name="artist" required>
-            <option value="">Select an artist from the list.</option>
-            {% for artist_id, artist_name in artists.items() %}
-                <option value="{{ artist_id }}">{{ artist_name }}</option>
-            {% endfor %}
-        </select>
-        <br>
-        <label for="prompt">Prompt:</label>
-        <input type="text" id="prompt" name="prompt" value="If I had a hammer">
-        <br>
-        <button type="submit">Generate lyrics</button>
-    </form>
-    <div id="loading" style="display: none;"> Working...</div>
-    <div id="generated-lyrics"></div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<h1>Welcome to the Lyrics Dreamer!</h1>
+<p>What would you like to do today?</p>
+<a href="{{ url_for('lyrics_generator') }}">Generate Lyrics</a>
+<a href="{{ url_for('game') }}">Play the Guess the Artist Game</a>
+<p>
+    Disclaimer 1: The generated lyrics might contain profanity and other offensive language, especially if the selected
+    artist uses such language in their songs. Please do not use if it makes you uncomfortable.<br>
+    Disclaimer 2: The artist selection is strongly biased towards my personal taste in music.</p>
 </body>
 </html>

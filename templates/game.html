@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guess the Artist</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+<h1>Guess the Artist</h1>
+<p>The generative model will generate lyrics in the style of a random artist. Try to guess who!</p>
+
+<div id="game-container">
+    <div id="game-info">
+        <button id="generate-game-lyrics-btn">Generate Next Lyrics</button>
+    </div>
+
+    <div id="lyrics-display"></div>
+
+    <form id="guess-form">
+        <label for="artist-select">Select the artist:</label>
+        <select id="artist-select">
+            {% for artist_id, artist_name in artists.items() %}
+            <option value="{{ artist_id }}">{{ artist_name }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Submit Guess</button>
+    </form>
+
+    <div id="result-display"></div>
+    <div id="score-display"></div>
+    <div id="rounds-display"></div>
+
+
+    <a href="/">Back to Main Page</a>
+</div>
+</body>
+</html>

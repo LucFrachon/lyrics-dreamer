@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial- scale=1.0">
+    <title>Generate Lyrics</title>
+</head>
+<body>
+<h1>Generate Lyrics</h1>
+<p>Generate lyrics in the style of your favorite artist!</p>
+
+<form id="lyrics-generator-form">
+    <label for="artist">Artist:</label>
+    <select id="artist" name="artist" required>
+        <option value="">Select an artist from the list.</option>
+        {% for artist_id, artist_name in artists.items() %}
+        <option value="{{ artist_id }}">{{ artist_name }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label for="prompt">Enter a prompt (a few words):</label>
+    <input type="text" id="prompt" name="prompt" value="If I had a hammer">
+    <br>
+    <button type="submit">Generate lyrics</button>
+</form>
+<div id="loading" style="display: none;"> Working...</div>
+<div id="generated-lyrics"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+<a href="{{ url_for('index') }}">Back to the main page</a>
+</body>
+</html>

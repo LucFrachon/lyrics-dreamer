@@ -1,12 +1,16 @@
 import os
+import random
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify,session
 import yaml
+
 import src.inference as inference
+# import src.game as game
+import src.utils
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
-app.config['DEBUG'] = True
+app.secret_key = "280548"
 
 model_kwargs = dict(
     num_return_sequences=1,
@@ -47,24 +51,68 @@ def load_artists(artist_list: list = None):
     return artists_dict
 
 
-@app.route('/')
-def index():
-    artists = load_artists()
-    return render_template('index.html', artists=artists)
+ARTISTS_DICT = load_artists()
+with open(os.path.join(src_dir, "config/game_prompts.yaml"), 'r') as f:
+    PROMPTS = yaml.load(f, Loader=yaml.FullLoader)
 
-@app.route('/generate_lyrics', methods=['POST'])
-def generate_lyrics():
-    artist = request.form.get('artist')
-    prompt = request.form.get('prompt')
-    model, tokenizer = inference.initialise_model_for_inference(artist)
+def generate_lyrics_for_display(artist_id, prompt):
+    model, tokenizer = inference.initialise_model_for_inference(artist_id)
     lyrics = inference.generate_lyrics(
         model,
         tokenizer,
         prompt,
         **model_kwargs,
     )
-    lyrics = inference.pretty_format(lyrics)
-    return jsonify({"lyrics": lyrics})
+    lyrics = src.utils.pretty_format(lyrics)
+    return lyrics
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/lyrics_generator', methods=['GET', 'POST'])
+def lyrics_generator():
+    if request.method == 'POST':
+        artist_id = request.form.get('artist')
+        prompt = request.form.get('prompt')
+        lyrics = generate_lyrics_for_display(artist_id, prompt)
+        return jsonify(lyrics=lyrics)
+    else:
+        return render_template('lyrics_generator.html', artists=ARTISTS_DICT)
+
+@app.route('/game', methods=['GET'])
+def game():
+    session['correct_guesses'] = 0
+    session['total_guesses'] = 0
+    session['score'] = '0'
+    session['rounds'] = 0
+    return render_template("game.html", artists=ARTISTS_DICT)
+
+@app.route('/generate_game_lyrics', methods=['POST'])
+def generate_game_lyrics():
+    artist_id = random.choice(list(ARTISTS_DICT.keys()))
+    prompt = random.choice(PROMPTS)
+    session['artist'] = artist_id
+    print(artist_id, prompt)
+    lyrics = generate_lyrics_for_display(artist_id, prompt)
+    print(lyrics)
+    return jsonify(lyrics=lyrics)
+
+@app.route('/submit_guess', methods=['POST'])
+def submit_guess():
+    guess = request.form.get('guess')
+    artist_id = session.get('artist')
+
+    if artist_id and guess == artist_id:
+        result = "Correct!"
+        session['correct_guesses'] += 1
+    else:
+        result = "Incorrect, it was " + ARTISTS_DICT[artist_id] + "."
+
+    session['rounds'] += 1
+    session['score'] = f"{100. * session['correct_guesses'] / session['rounds']:.1f}%"
+
+    return jsonify(result=result, score=session['score'], rounds=session['rounds'])
 
 
 if __name__ == '__main__':

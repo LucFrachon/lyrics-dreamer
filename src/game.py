@@ -1,5 +1,6 @@
 """
 Pick an artist at random from artists.yaml, generate lyrics, and ask the user to guess whose style the lyrics are in.
+This script is only for using on the command line, not for the web app.
 """
 
 import os
@@ -7,9 +8,8 @@ import random
 
 import yaml
 
-from src.inference import initialise_model_for_inference, generate_lyrics, pretty_format
-from src.utils import set_seed
-
+from src.inference import initialise_model_for_inference, generate_lyrics
+from src.utils import set_seed, pretty_format
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -44,7 +44,8 @@ def main(args):
         repetition_penalty=args.repetition_penalty,
         early_stopping=args.early_stopping,
     )
-    pretty_format(lyrics)
+    lyrics = pretty_format(lyrics)
+    print(lyrics)
     print(f"Guess whose lyrics these are: {', '.join(ARTISTS)}")
     guess = input(">>> ")
     if guess == artist:

@@ -1,15 +1,14 @@
 import os
 
-import yaml
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from src.utils import set_seed
+from src.utils import set_seed, pretty_format
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-def initialise_model_for_inference(artist_name: str):
-    checkpoint_dir = os.path.join(src_dir, f"../checkpoints/{artist_name}")
+def initialise_model_for_inference(artist_id: str):
+    checkpoint_dir = os.path.join(src_dir, f"../checkpoints/{artist_id}")
     # Get the most recent checkpoint
     step_nums = [int(f.split('-')[1]) for f in os.listdir(checkpoint_dir) if f.startswith('checkpoint')]
     step_nums.sort()
@@ -54,36 +53,6 @@ def generate_lyrics(
 
     return generated_lyrics
 
-
-def pretty_format(generated_lyrics):
-    # def wrap_text(text, max_width):
-    #     original_lines = text.split('\n')
-    #     wrapped_lines = []
-    #
-    #     for line in original_lines:
-    #         words = line.split()
-    #         current_line = []
-    #
-    #         for word in words:
-    #             if len(" ".join(current_line + [word])) <= max_width:
-    #                 current_line.append(word)
-    #             else:
-    #                 wrapped_lines.append(" ".join(current_line))
-    #                 current_line = [word]
-    #
-    #         wrapped_lines.append(" ".join(current_line))  # Add the last line of the current group
-    #     return "\n".join(wrapped_lines)
-
-
-    if not isinstance(generated_lyrics, list):
-        generated_lyrics = [generated_lyrics]
-    out = '---\n'
-
-    for i, lyric in enumerate(generated_lyrics):
-        out += f"Lyrics {i + 1}:\n" if len(generated_lyrics) > 1 else "Lyrics:\n"
-        out += lyric
-        out += '\n---'
-    return out
 
 def main(args):
     set_seed(args.seed)
