@@ -86,7 +86,7 @@ def game():
     session['total_guesses'] = 0
     session['score'] = '0'
     session['rounds'] = 0
-    return render_template("game.html", artists=ARTISTS_DICT)
+    return render_template("game_basic.html", artists=ARTISTS_DICT)
 
 @app.route('/generate_game_lyrics', methods=['POST'])
 def generate_game_lyrics():
