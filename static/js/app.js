@@ -25,9 +25,16 @@ $(document).ready(function () {
         });
     });
 
+    // Disable guess button initially
+    disableGuessForm();
+
     // Event listener for generating lyrics and starting the game
     $("#generate-game-lyrics-btn").click(function () {
+        $("#loading").show();
+        $("#lyrics-display").empty();
         $.post("/generate_game_lyrics", function (data) {
+            // Hide the loading indicator
+            $("#loading").hide();
             $("#lyrics-display").html(
                 `<div style="white-space: pre-line; word-wrap: break-word; max-width: 80%">${data.lyrics}</div>`
             );

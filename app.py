@@ -1,7 +1,7 @@
 import os
 import random
 
-from flask import Flask, render_template, request, jsonify,session
+from flask import Flask, render_template, request, jsonify, session, send_from_directory
 import yaml
 
 import src.inference as inference
@@ -86,7 +86,7 @@ def game():
     session['total_guesses'] = 0
     session['score'] = '0'
     session['rounds'] = 0
-    return render_template("game_basic.html", artists=ARTISTS_DICT)
+    return render_template("game.html", artists=ARTISTS_DICT)
 
 @app.route('/generate_game_lyrics', methods=['POST'])
 def generate_game_lyrics():
@@ -110,9 +110,14 @@ def submit_guess():
         result = "Incorrect, it was " + ARTISTS_DICT[artist_id] + "."
 
     session['rounds'] += 1
-    session['score'] = f"{100. * session['correct_guesses'] / session['rounds']:.1f}%"
+    session['score'] = f"{100. * session['correct_guesses'] / session['rounds']:.1f}"
 
     return jsonify(result=result, score=session['score'], rounds=session['rounds'])
+
+
+@app.route('/favicon')
+def favicon():
+    return send_from_directory('static', 'assets/favicon.ico')
 
 
 if __name__ == '__main__':

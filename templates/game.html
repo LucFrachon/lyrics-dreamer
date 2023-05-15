@@ -25,9 +25,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" aria-current="page" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link active" href="{{ url_for('lyrics_generator') }}">Generator</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('game') }}">Game</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="/">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('lyrics_generator') }}">Generator</a>
+                </li>
+                <li class="nav-item"><a class="nav-link active" href="{{ url_for('game') }}">Game</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">About</a></li>
                 <!--                        <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>-->
             </ul>
         </div>
@@ -38,8 +39,8 @@
     <div class="container px-lg-5">
         <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
             <div class="m-4 m-lg-5">
-                <h1 class="display-5 fw-bold">Lyrics Generator</h1>
-                <p class="fs-4">Generate random lyrics in the style of your favourite artist.</p>
+                <h1 class="display-5 fw-bold">Guess the Artist</h1>
+                <p class="fs-4">Guess whose style the NLP model is trying to imitate.</p>
                 <!--                        <a class="btn btn-primary btn-lg" href="{{ url_for('lyrics_generator') }}">Generate some lyrics</a>-->
                 <!--                        <a class="btn btn-primary btn-lg" href="{{ url_for('game') }}">Play Guess the Artist</a>-->
             </div>
@@ -55,24 +56,36 @@
                 <div class="card bg-light border-0 h-100">
                     <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
                         <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4">
-                            <i class="bi bi-music-note-list"></i>
+                            <i class="bi bi-dice-3"></i>
                         </div>
-                        <form id="lyrics-generator-form">
+                        <div id="game-info">
+                            <button id="generate-game-lyrics-btn" class="btn btn-primary btn-lg">Generate Next Lyrics</button>
+                        </div>
+                    </div>
+                    <div class="card-body text-lg-start p-4 p-lg-5 pt-0 pt-lg-0">
+                        <div id="loading" style="display: none;"> Working...</div>
+                        <div id="lyrics-display"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-xxl-12 mb-5">
+                <div class="card bg-light border-0 h-100">
+                    <div class="card-body text-lg-center p-4 p-lg-5 pt-0 pt-lg-0">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4">
+                            <i class="bi bi-question-square"></i>
+                        </div>
+                        <form id="guess-form">
                             <div class="mb-3">
-                                <label for="artist" class="form-label">Artist:</label>
-                                <select id="artist" name="artist" required class="form-select">
+                                <label for="artist-select" class="form-label">Who is the artist?</label>
+                                <select id="artist-select" name="artist" required class="form-select">
                                     <option value="">Select an artist from the list.</option>
                                     {% for artist_id, artist_name in artists.items() %}
                                     <option value="{{ artist_id }}">{{ artist_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <br>
-                                <label for="prompt" class="form-label">Enter a prompt (a few words):</label>
-                                <input type="text" id="prompt" name="prompt" value="If I had a hammer" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg">Generate lyrics</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Submit Guess</button>
                         </form>
                     </div>
                 </div>
@@ -80,9 +93,13 @@
 
             <div class="col-lg-12 col-xxl-12 mb-5">
                 <div class="card bg-light border-0 h-100">
-                    <div class="card-body text-lg-start p-4 p-lg-5 pt-0 pt-lg-0">
-                        <div id="loading" style="display: none;"> Working...</div>
-                        <div id="generated-lyrics"></div>
+                    <div class="card-body text-lg-center p-4 p-lg-5 pt-0 pt-lg-0">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4">
+                            <i class="bi bi-list-stars"></i>
+                        </div>
+                        <div id="result-display"></div>
+                        <div id="score-display"></div>
+                        <div id="rounds-display"></div>
                     </div>
                 </div>
             </div>
