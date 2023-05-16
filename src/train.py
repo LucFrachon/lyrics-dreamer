@@ -1,4 +1,8 @@
-import os
+import os, sys
+
+src_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(src_dir)
+
 import random
 from argparse import Namespace
 
@@ -15,10 +19,8 @@ from transformers import (
 )
 import wandb
 
-from src.data_processing import load_preprocess_and_save, tokenize
-from src.utils import set_seed, TempRandomSeed
-
-src_dir = os.path.dirname(os.path.abspath(__file__))
+from data_processing import load_preprocess_and_save, tokenize
+from utils import set_seed, TempRandomSeed
 
 with open(os.path.join(src_dir, "../config/artists.yaml"), 'r') as f:
     ARTISTS = yaml.load(f, Loader=yaml.FullLoader)
@@ -147,6 +149,8 @@ def main(args: Namespace):
 
 if __name__ == '__main__':
     import argparse
+
+    # os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-1', '--add_1_artist', action='store_true', help='Add a new artist to the training pipeline.')

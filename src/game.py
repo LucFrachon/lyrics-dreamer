@@ -2,16 +2,17 @@
 Pick an artist at random from artists.yaml, generate lyrics, and ask the user to guess whose style the lyrics are in.
 This script is only for using on the command line, not for the web app.
 """
+import os, sys
 
-import os
+src_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(src_dir)
+
 import random
 
 import yaml
 
-from src.inference import initialise_model_for_inference, generate_lyrics
-from src.utils import set_seed, pretty_format
-
-src_dir = os.path.dirname(os.path.abspath(__file__))
+from inference import initialise_model_for_inference, generate_lyrics
+from utils import set_seed, pretty_format
 
 with open(os.path.join(src_dir, "../config/artists.yaml"), 'r') as f:
     ARTISTS = yaml.load(f, Loader=yaml.FullLoader)
@@ -60,8 +61,8 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--min_length", "-n", type=int, default=100)
     parser.add_argument("--max_length", "-x", type=int, default=200)
-    parser.add_argument("--temperature", "-t", type=float, default=1.3)
-    parser.add_argument("--top_p", "-o", type=float, default=0.98)
+    parser.add_argument("--temperature", "-t", type=float, default=1.2)
+    parser.add_argument("--top_p", "-o", type=float, default=0.95)
     parser.add_argument("--top_k", "-k", type=int, default=0)
     parser.add_argument("--repetition_penalty", "-r", type=float, default=1.0)
     parser.add_argument("--early_stopping", "-e", action="store_true")

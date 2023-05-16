@@ -4,9 +4,7 @@ import random
 from flask import Flask, render_template, request, jsonify, session, send_from_directory
 import yaml
 
-import src.inference as inference
-# import src.game as game
-import src.utils
+from src import inference, utils
 
 src_dir = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
@@ -16,11 +14,11 @@ model_kwargs = dict(
     num_return_sequences=1,
     min_length=100,
     max_length=200,
-    temperature=1.41,
+    temperature=1.2,
     top_p=0.95,
     top_k=0,
-    repetition_penalty=1.1,
-    early_stopping=True,
+    repetition_penalty=1.0,
+    early_stopping=False,
 )
 
 
@@ -63,12 +61,16 @@ def generate_lyrics_for_display(artist_id, prompt):
         prompt,
         **model_kwargs,
     )
-    lyrics = src.utils.pretty_format(lyrics)
+    lyrics = utils.pretty_format(lyrics)
     return lyrics
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
 
 @app.route('/lyrics_generator', methods=['GET', 'POST'])
 def lyrics_generator():

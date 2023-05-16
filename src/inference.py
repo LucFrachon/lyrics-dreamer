@@ -1,10 +1,17 @@
-import os
+import os, sys
+
+src_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(src_dir)
+
+import torch
+import yaml
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from src.utils import set_seed, pretty_format
+from utils import set_seed, pretty_format
 
-src_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(src_dir, "../config/inference.yaml"), 'r') as f:
+    inference_config = yaml.load(f, Loader=yaml.FullLoader)['config']
 
 
 def initialise_model_for_inference(artist_id: str):
@@ -17,7 +24,6 @@ def initialise_model_for_inference(artist_id: str):
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.pad_token_id = tokenizer.eos_token_id
     model = AutoModelForCausalLM.from_pretrained(latest_checkpoint)
-    model.eval()
 
     return model, tokenizer
 
@@ -35,9 +41,15 @@ def generate_lyrics(
         repetition_penalty,
         early_stopping,
 ):
+    if inference_config['device'] == 'cpu':
+        device = torch.device('cpu')
+    else:
+        device = torch.device('cuda')
     encoded_prompt = tokenizer(prompt, return_tensors='pt')
+    encoded_prompt = {k: v.to(device) for k, v in encoded_prompt.items()}
+    model.to(device)
     output = model.generate(
-        input_ids =encoded_prompt['input_ids'],
+        input_ids=encoded_prompt['input_ids'],
         attention_mask=encoded_prompt['attention_mask'],
         do_sample=True,
         min_length=min_length,
@@ -48,6 +60,7 @@ def generate_lyrics(
         repetition_penalty=repetition_penalty,
         early_stopping=early_stopping,
         num_return_sequences=num_return_sequences,
+
     )
     generated_lyrics = [tokenizer.decode(ids, skip_special_tokens=True) for ids in output]
 
@@ -81,7 +94,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_return_sequences', '-n', type=int, default=1)
     parser.add_argument('--min_length', '-i', type=int, default=100)
     parser.add_argument('--max_length', '-x', type=int, default=200)
-    parser.add_argument('--temperature', '-t', type=float, default=1.41)
+    parser.add_argument('--temperature', '-t', type=float, default=1.2)
     parser.add_argument('--top_p', '-o', type=float, default=0.95)
     parser.add_argument('--top_k', '-k', type=int, default=0)
     parser.add_argument('--repetition_penalty', '-r', type=float, default=1.0)
