@@ -1,0 +1,51 @@
+{
+  "builder_name": "oasis",
+  "citation": "@InProceedings{huggingartists:dataset,\ntitle = {Lyrics dataset},\nauthor={Aleksey Korshuk\n},\nyear={2021}\n}\n",
+  "config_name": "default",
+  "dataset_size": 196022,
+  "description": "This dataset is designed to generate lyrics with HuggingArtists.\n",
+  "download_checksums": {
+    "https://huggingface.co/datasets/huggingartists/oasis/resolve/main/datasets.json": {
+      "num_bytes": 202042,
+      "checksum": null
+    }
+  },
+  "download_size": 202042,
+  "features": {
+    "input_ids": {
+      "feature": {
+        "dtype": "int32",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "attention_mask": {
+      "feature": {
+        "dtype": "int8",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "overflow_to_sample_mapping": {
+      "dtype": "int64",
+      "_type": "Value"
+    }
+  },
+  "homepage": "https://github.com/AlekseyKorshuk/huggingartists",
+  "license": "All rights belong to copyright holders",
+  "size_in_bytes": 398064,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 196022,
+      "num_examples": 192,
+      "dataset_name": "oasis"
+    }
+  },
+  "version": {
+    "version_str": "1.0.0",
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}

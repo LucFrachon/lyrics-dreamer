@@ -1,0 +1,51 @@
+{
+  "builder_name": "radiohead",
+  "citation": "@InProceedings{huggingartists:dataset,\ntitle = {Lyrics dataset},\nauthor={Aleksey Korshuk\n},\nyear={2021}\n}\n",
+  "config_name": "default",
+  "dataset_size": 265996,
+  "description": "This dataset is designed to generate lyrics with HuggingArtists.\n",
+  "download_checksums": {
+    "https://huggingface.co/datasets/huggingartists/radiohead/resolve/main/datasets.json": {
+      "num_bytes": 275533,
+      "checksum": null
+    }
+  },
+  "download_size": 275533,
+  "features": {
+    "input_ids": {
+      "feature": {
+        "dtype": "int32",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "attention_mask": {
+      "feature": {
+        "dtype": "int8",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "overflow_to_sample_mapping": {
+      "dtype": "int64",
+      "_type": "Value"
+    }
+  },
+  "homepage": "https://github.com/AlekseyKorshuk/huggingartists",
+  "license": "All rights belong to copyright holders",
+  "size_in_bytes": 541529,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 265996,
+      "num_examples": 505,
+      "dataset_name": "radiohead"
+    }
+  },
+  "version": {
+    "version_str": "1.0.0",
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}
