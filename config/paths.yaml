@@ -1,0 +1,4 @@
+paths:
+#  checkpoints: "https://heroku-lyrics-dreamer.s3.amazonaws.com/checkpoints/"
+  data: "D:/experiments/lyrics-dreamer/data_tokenized/"
+  checkpoints: "D:/experiments/lyrics-dreamer/checkpoints/"

@@ -28,6 +28,11 @@ with open(os.path.join(src_dir, "../config/tokenizer.yaml"), 'r') as f:
     tokenizer_config = yaml.load(f, Loader=yaml.FullLoader)['config']
 with open(os.path.join(src_dir, "../config/training.yaml"), 'r') as f:
     training_config = yaml.load(f, Loader=yaml.FullLoader)['config']
+# Import the path configuration
+with open(os.path.join(src_dir, "../config/paths.yaml"), 'r') as f:
+    data_path = yaml.load(f, Loader=yaml.FullLoader)['paths']['data']
+with open(os.path.join(src_dir, "../config/paths.yaml"), 'r') as f:
+    chkpt_path = yaml.load(f, Loader=yaml.FullLoader)['paths']['checkpoints']
 
 
 def train(datasets_dict, tokenizer, train_config):
@@ -51,7 +56,7 @@ def train(datasets_dict, tokenizer, train_config):
         print(f"Training {artist}:")
         model = AutoModelForCausalLM.from_pretrained('gpt2')
         training_args = TrainingArguments(
-            output_dir=os.path.join(src_dir, f"../checkpoints/{artist}"),
+            output_dir=os.path.join(chkpt_path, artist),
             learning_rate=float(training_config['learning_rate']),
             weight_decay=float(training_config['weight_decay']),
             lr_scheduler_type=training_config['lr_scheduler_type'],
@@ -117,8 +122,9 @@ def add_artist_model(artist_name, force_retrain=False):
         block_size=tokenizer_config['block_size'],
         stride=tokenizer_config['stride'],
         artist_list=[artist_name],
+        save_dir=data_path,
     )
-    print(f"Dataset `huggingartists/{artist_name}` added to `../data_tokenized`.")
+    print(f"Dataset `huggingartists/{artist_name}` added to `data_tokenized`.")
     print(f"Training {artist_name}:")
     run_training_pipeline([artist_name])
 
@@ -133,7 +139,7 @@ def add_artist_model(artist_name, force_retrain=False):
 def run_training_pipeline(artist_list: list = ARTISTS):
     set_seed(training_config['seed'])
     datasets = {
-        artist: load_from_disk(os.path.join(src_dir, f"../data_tokenized/{artist}")) for artist in artist_list
+        artist: load_from_disk(os.path.join(data_path, artist)) for artist in artist_list
     }
     tokenizer = AutoTokenizer.from_pretrained('gpt2')
     tokenizer.pad_token = tokenizer.eos_token

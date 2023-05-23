@@ -12,10 +12,12 @@ from utils import set_seed, pretty_format
 
 with open(os.path.join(src_dir, "../config/inference.yaml"), 'r') as f:
     inference_config = yaml.load(f, Loader=yaml.FullLoader)['config']
+with open(os.path.join(src_dir, "../config/paths.yaml"), 'r') as f:
+    chkpt_path = yaml.load(f, Loader=yaml.FullLoader)['paths']['checkpoints']
 
 
 def initialise_model_for_inference(artist_id: str):
-    checkpoint_dir = os.path.join(src_dir, f"../checkpoints/{artist_id}")
+    checkpoint_dir = os.path.join(chkpt_path, artist_id)
     # Get the most recent checkpoint
     step_nums = [int(f.split('-')[1]) for f in os.listdir(checkpoint_dir) if f.startswith('checkpoint')]
     step_nums.sort()
