@@ -164,3 +164,10 @@ checkpoints/
 
 # Data
 data_tokenized/
+
+# Logs
+wandb/
+src/wandb
+
+# Confidential
+.aws_credentials

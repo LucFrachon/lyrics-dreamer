@@ -149,8 +149,6 @@ python-multipart==0.0.6
 pytorch-lightning==2.0.2
 pytz==2023.3
 pyviz-comms==2.2.1
-pywin32==306
-pywinpty==2.0.10
 PyYAML==6.0
 pyzmq==25.0.2
 qtconsole==5.4.2
@@ -183,11 +181,9 @@ threadpoolctl==3.1.0
 tinycss2==1.2.1
 tokenizers==0.13.3
 toolz==0.12.0
-torch==2.0.0+cu117
-torchaudio==2.0.1+cu117
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.0
 torchmetrics==0.11.4
-torchvision==0.15.1+cu117
-tornado==6.3.1
 tqdm==4.65.0
 traitlets==5.9.0
 transformers==4.28.1
