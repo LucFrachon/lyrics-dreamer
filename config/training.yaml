@@ -11,3 +11,4 @@ config:
   n_cosine_cycles: 3
   fp16: true
   seed: 42
+  save_to_hub: true
