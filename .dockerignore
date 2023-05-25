@@ -1,0 +1,9 @@
+__pycache__
+.git/
+.github/
+.idea/
+wandb/
+src/wandb
+checkpoints/
+data_tokenized/
+.aws_credentials

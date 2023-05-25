@@ -17,7 +17,7 @@ if inference_config['mode'] == 'local':
         chkpt_path = yaml.load(f, Loader=yaml.FullLoader)['local_paths']['checkpoints']
 elif inference_config['mode'] == 's3':
     with open(os.path.join(src_dir, "../config/paths.yaml"), 'r') as f:
-        chkpt_path = yaml.load(f, Loader=yaml.FullLoader)['s3_paths']['checkpoints']
+        chkpt_path = yaml.load(f, Loader=yaml.FullLoader)['remote_paths']['checkpoints']
 
 
 def initialise_model_for_inference(artist_id: str):
@@ -28,7 +28,7 @@ def initialise_model_for_inference(artist_id: str):
         step_nums.sort()
         latest_checkpoint = os.path.join(checkpoint_dir, f"checkpoint-{step_nums[-1]}")
     elif inference_config['mode'] == 's3':
-        latest_checkpoint = f"{chkpt_path}/{artist_id}/checkpoint*"
+        latest_checkpoint = f"{chkpt_path}{artist_id}/checkpoint"
     else:
         return ValueError, "Only `local` and `s3` are valid modes."
 
