@@ -1,0 +1,14 @@
+config:
+  tokenized_data_dict_path: data_tokenized
+  learning_rate: 1e-4
+  lr_scheduler_type: cosine_with_restarts
+  weight_decay: 0.01
+  batch_size: 8
+  n_training_steps: 3000
+  n_epochs: 100
+  n_warmup_steps: 100
+  early_stopping_patience: 2
+  n_cosine_cycles: 3
+  fp16: true
+  seed: 42
+  save_to_hub: true

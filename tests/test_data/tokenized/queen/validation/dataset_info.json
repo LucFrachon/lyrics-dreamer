@@ -1,0 +1,51 @@
+{
+  "builder_name": "queen",
+  "citation": "@InProceedings{huggingartists:dataset,\ntitle = {Lyrics dataset},\nauthor={Aleksey Korshuk\n},\nyear={2021}\n}\n",
+  "config_name": "default",
+  "dataset_size": 575027,
+  "description": "This dataset is designed to generate lyrics with HuggingArtists.\n",
+  "download_checksums": {
+    "https://huggingface.co/datasets/huggingartists/queen/resolve/main/datasets.json": {
+      "num_bytes": 594791,
+      "checksum": null
+    }
+  },
+  "download_size": 594791,
+  "features": {
+    "input_ids": {
+      "feature": {
+        "dtype": "int32",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "attention_mask": {
+      "feature": {
+        "dtype": "int8",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "overflow_to_sample_mapping": {
+      "dtype": "int64",
+      "_type": "Value"
+    }
+  },
+  "homepage": "https://github.com/AlekseyKorshuk/huggingartists",
+  "license": "All rights belong to copyright holders",
+  "size_in_bytes": 1169818,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 575027,
+      "num_examples": 580,
+      "dataset_name": "queen"
+    }
+  },
+  "version": {
+    "version_str": "1.0.0",
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}

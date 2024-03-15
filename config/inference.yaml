@@ -1,0 +1,3 @@
+config:
+  mode: local  # or local
+  device: cpu

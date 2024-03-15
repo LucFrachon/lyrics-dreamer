@@ -1,0 +1,9 @@
+s3_paths:
+  data: "https://heroku-lyrics-dreamer.s3.amazonaws.com/data_tokenized/"
+  checkpoints: "https://heroku-lyrics-dreamer.s3.amazonaws.com/checkpoints/"
+local_paths:
+  data: "d:/experiments/lyrics-dreamer/data_tokenized/"
+  checkpoints: "d:/experiments/lyrics-dreamer/checkpoints/"
+hub_paths:
+  data: "https://huggingface.co/lfrachon/lyrics-dreamer/data_tokenized/"
+  checkpoints: "https://huggingface.co/lfrachon/lyrics-dreamer/checkpoints/"
